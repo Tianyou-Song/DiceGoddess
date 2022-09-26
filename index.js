@@ -50,7 +50,7 @@ client.on("interactionCreate", async (interaction) => {
       const complexity = options.getNumber("complexity");
       const numberOfDice = options.getNumber("number_of_dice");
       const focus = options.getNumber("focus") || 0;
-      const hasAncientKnowledge = options.getBoolean("ancient_knowledge");
+      const hasAncientKnowledge = options.getBoolean("ancient_knowledge") || false;
 
       const originalDiceRolls = Array.from(
         {
