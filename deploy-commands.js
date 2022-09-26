@@ -20,34 +20,34 @@ const commands = [
     new SlashCommandBuilder()
         .setName('r')
         .setDescription('Dice roller for Soulbound. Featuring intelligent focus and ancient knowledge application.')
-        .addNumberOption(option =>
-            option.setName('difficulty')
-                .setDescription('difficulty')
-                .setRequired(true)
-                .setMaxValue(6)
-                .setMinValue(2)
+        .addNumberOption(option => option
+            .setDescription('difficulty')
+            .setMaxValue(6)
+            .setMinValue(2)
+            .setName('difficulty')
+            .setRequired(true)
         )
-        .addNumberOption(option =>
-            option.setName('complexity')
-                .setDescription('complexity')
-                .setRequired(true)
-                .setMinValue(1)
+        .addNumberOption(option => option
+            .setDescription('complexity')
+            .setMinValue(1)
+            .setName('complexity')
+            .setRequired(true)
         )
-        .addNumberOption(option =>
-            option.setName('number_of_dice')
-                .setDescription('number of dice')
-                .setRequired(true)
-                .setMinValue(1)
+        .addNumberOption(option => option
+            .setDescription("number of d6's")
+            .setMinValue(1)
+            .setName('number_of_dice')
+            .setRequired(true)
         )
-        .addNumberOption(option =>
-            option.setName('focus')
-                .setDescription("Focus applied to maximize successes. Edge cases not covered where that's not the case (such as wanting more 6's than overall successes)")
-                .setMinValue(0)
+        .addNumberOption(option => option
+            .setDescription("Applied to maximize successes, edge cases not covered (wanting more 6's than overall successes)")
+            .setMinValue(0)
+            .setName('focus')
         )
-        .addBooleanOption(option =>
-            option.setName('ancient_knowledge')
-                .setDescription("Ancient Knowledge")
-                .setRequired(false)
+        .addBooleanOption(option => option
+            .setDescription("Any result of 6 counts as two successes")
+            .setName('ancient_knowledge')
+            .setRequired(false)
         )
 ]
     .map(command => command.toJSON());
