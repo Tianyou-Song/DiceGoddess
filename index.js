@@ -45,68 +45,106 @@ client.on("interactionCreate", async (interaction) => {
   const { commandName, options } = interaction;
 
   switch (commandName) {
-      case "r":
-          const difficulty = options.getNumber("difficulty");
-          const complexity = options.getNumber("complexity");
-          const length = options.getNumber("number_of_dice");
-          const focus = options.getNumber("focus") || 0;
-          const hasAncientKnowledge = options.getBoolean("ancient_knowledge");
+    case "r":
+      const difficulty = options.getNumber("difficulty");
+      const complexity = options.getNumber("complexity");
+      const numberOfDice = options.getNumber("number_of_dice");
+      const focus = options.getNumber("focus") || 0;
+      const hasAncientKnowledge = options.getBoolean("ancient_knowledge");
 
-          const originalDiceRolls = Array.from(
-              {
-                  length,
-              },
-              () => rollDice()
-          );
-          const newDiceRolls = _.cloneDeep(originalDiceRolls);
+      const originalDiceRolls = Array.from(
+        {
+            length: numberOfDice,
+        },
+        () => rollDice()
+      );
+      const newDiceRolls = _.cloneDeep(originalDiceRolls);
 
-          let focusLeft = focus;
-          let foundIdx;
+      let focusLeft = focus;
+      let foundIdx, difference;
 
-          while (focusLeft > 0) {
-              if (hasAncientKnowledge) {
-                  foundIdx = newDiceRolls.findIndex(roll => roll === 5);
-                  if (foundIdx || foundIdx === 0) {
-                      newDiceRolls[foundIdx] = 6;
-                      foundIdx = null;
-                      focusLeft--;
-                      continue;
-                  }
-              }
+      while (focusLeft > 0) {
+        if (hasAncientKnowledge) {
+          foundIdx = newDiceRolls.findIndex(roll => roll === 5);
+          if (foundIdx !== -1) {
+            newDiceRolls[foundIdx] = 6;
+            foundIdx = null;
+            focusLeft--;
+            continue;
+          }
 
-              for (let i = 1; i <= focusLeft; i++) {
-                  foundIdx = newDiceRolls.findIndex(roll => difficulty - roll === i);
-                  if (foundIdx || foundIdx === 0) {
-                      newDiceRolls[foundIdx] += i;
-                      foundIdx = null;
-                      focusLeft -= i;
-                      continue;
-                  }
-              }
+          if (focusLeft >= 2) {
+            foundIdx = newDiceRolls.findIndex(roll => roll === 4);
+            if (foundIdx !== -1) {
+              newDiceRolls[foundIdx] = 6;
+              foundIdx = null;
+              focusLeft -= 2;
               continue;
+            }
           }
+        }
 
-
-          let successes = newDiceRolls.filter((roll) => roll >= difficulty).length;
-
-          if (hasAncientKnowledge) {
-              successes += newDiceRolls.filter((roll) => roll === 6).length;
+        difference = 1;
+        while (difference <= focusLeft) {
+          foundIdx = newDiceRolls.findIndex(roll => difficulty - roll === difference);
+          if (foundIdx !== -1) {
+            newDiceRolls[foundIdx] += difference;
+            foundIdx = null;
+            focusLeft -= difference;
+            continue;
           }
+          difference++;
+        }
 
-          let message = `DN: ${difficulty}:${complexity}
-rolls:${originalDiceRolls.join(",")}.
-after focus:${newDiceRolls.join(",")}.
-made:${successes}, need:${complexity}.
+        if (difference > focusLeft) {
+          break;
+        }
+      }
+
+      difference = 1;
+      while (focusLeft > 0) {
+        while (difference < 6) {
+          foundIdx = newDiceRolls.findIndex(roll => 6 - roll === difference);
+          if (foundIdx !== -1) {
+            newDiceRolls[foundIdx]++;
+            difference = 1;
+            foundIdx = null;
+            focusLeft--;
+            continue;
+          }
+          difference++;
+          break;
+        }
+
+        if (newDiceRolls.every(roll => roll === 6)) {
+          break;
+        }
+      }
+
+
+      let successes = newDiceRolls.filter((roll) => roll >= difficulty).length;
+      const sixes = newDiceRolls.filter((roll) => roll === 6).length;
+
+      if (hasAncientKnowledge) {
+        successes += sixes;
+      }
+
+      let message = `
+DN: ${difficulty}:${complexity}, rolling: ${numberOfDice} dice, focus: ${focus}, Ancient Knowledge: ${hasAncientKnowledge}
+rolls: ${originalDiceRolls.join(",")}.
+after focus: ${newDiceRolls.join(",")}.
+6's: ${sixes}
+made: ${successes}, need: ${complexity}.
 `;
-          if (successes < complexity) {
-              message += 'FAIL';
-          } else {
-              message += `SUCCESS, additional success: ${successes - complexity}`;
-          }
+      if (successes < complexity) {
+        message += 'FAIL!';
+      } else {
+        message += `SUCCESS! additional success: ${successes - complexity}`;
+      }
 
-          await interaction.reply(message);
+    await interaction.reply(message);
 
-      break;
+    break;
 
     default:
   }

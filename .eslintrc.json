@@ -1,8 +1,9 @@
 {
     "extends": [
-        "hardcore",
-        "hardcore/ts",
-        "hardcore/node"
+        // "hardcore",
+        // "hardcore/ts",
+        // "hardcore/node"
+        "eslint:recommended"
     ],
     "env": {
         "node": true,
