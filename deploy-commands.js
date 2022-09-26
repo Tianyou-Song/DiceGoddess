@@ -1,9 +1,3 @@
-/* eslint-disable unicorn/prefer-top-level-await */
-/* eslint-disable no-unused-vars */
-/* eslint-disable node/no-process-env */
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable no-console */
-
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -15,7 +9,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 config({
-  path: `${__dirname}/.env`,
+    path: `${__dirname}/.env`,
 });
 
 const { CLIENT_ID, GUILD_ID, DISCORD_TOKEN } = process.env;
@@ -48,6 +42,7 @@ const commands = [
         .addNumberOption(option =>
             option.setName('focus')
                 .setDescription('focus')
+                .setMinValue(0)
         )
         .addBooleanOption(option =>
             option.setName('ancient_knowledge')
