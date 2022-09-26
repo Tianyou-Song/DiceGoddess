@@ -19,7 +19,7 @@ const rest = new REST({ version: "10" }).setToken(DISCORD_TOKEN);
 const commands = [
     new SlashCommandBuilder()
         .setName('r')
-        .setDescription('Roll dice, format /r [difficulty] [complexity] [number of dice] [focus] [Ancient Knowledge]')
+        .setDescription('Dice roller for Soulbound. Featuring intelligent focus and ancient knowledge application.')
         .addNumberOption(option =>
             option.setName('difficulty')
                 .setDescription('difficulty')
@@ -41,7 +41,7 @@ const commands = [
         )
         .addNumberOption(option =>
             option.setName('focus')
-                .setDescription('focus')
+                .setDescription("Focus applied to maximize successes. Edge cases not covered where that's not the case (such as wanting more 6's than overall successes)")
                 .setMinValue(0)
         )
         .addBooleanOption(option =>
