@@ -130,7 +130,7 @@ client.on("interactionCreate", async (interaction) => {
       }
 
       let message = `
-DN: ${difficulty}:${complexity}, rolling: ${numberOfDice} dice, focus: ${focus}, Ancient Knowledge: ${hasAncientKnowledge}
+DN: ${difficulty}:${complexity}, rolling: ${numberOfDice}d6, focus: ${focus}, Ancient Knowledge: ${hasAncientKnowledge}.
 rolls: ${originalDiceRolls.join(",")}.
 after focus: ${newDiceRolls.join(",")}.
 6's: ${sixes}

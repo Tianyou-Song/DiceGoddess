@@ -40,26 +40,26 @@ const commands = [
                 .setMinValue(1)
         )
         .addNumberOption(option =>
-                option.setName('number_of_dice')
-                    .setDescription('number of dice')
-                    .setRequired(true)
-                    .setMinValue(1)
+            option.setName('number_of_dice')
+                .setDescription('number of dice')
+                .setRequired(true)
+                .setMinValue(1)
         )
         .addNumberOption(option =>
-                option.setName('focus')
-                    .setDescription('focus')
+            option.setName('focus')
+                .setDescription('focus')
         )
         .addBooleanOption(option =>
             option.setName('ancient_knowledge')
                 .setDescription("Ancient Knowledge")
-            .setRequired(false)
+                .setRequired(false)
         )
 ]
-	.map(command => command.toJSON());
+    .map(command => command.toJSON());
 
 rest.put(Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID), { body: commands })
-	.then((data) => console.log(`Successfully registered ${data.length} application commands.`))
-	.catch(console.error);
+    .then((data) => console.log(`Successfully registered ${data.length} application commands.`))
+    .catch(console.error);
 
 // rest
 //   .put(Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID), { body: [] })
