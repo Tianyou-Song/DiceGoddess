@@ -51,61 +51,103 @@ client.on("interactionCreate", async (interaction) => {
         );
         const newDiceRolls = _.cloneDeep(originalDiceRolls);
 
-        let focusLeft = focus;
-        let foundIdx, difference;
+        let
+            differenceTo6,
+            differenceToPass,
+            focusLeft = focus,
+            foundIdx,
+            rollsToFind = 5;
 
-        while (focusLeft > 0) {
-            if (hasAncientKnowledge) {
-                foundIdx = newDiceRolls.findIndex(roll => roll === 5);
-                if (foundIdx !== -1) {
-                    newDiceRolls[foundIdx] = 6;
-                    foundIdx = null;
-                    focusLeft--;
-                    continue;
-                }
+        while (focusLeft > 0 && rollsToFind > 0) {
+            differenceTo6 = 6 - rollsToFind;
+            differenceToPass = difficulty - rollsToFind;
 
-                if (focusLeft >= 2) {
-                    foundIdx = newDiceRolls.findIndex(roll => roll === 4);
-                    if (foundIdx !== -1) {
-                        newDiceRolls[foundIdx] = 6;
-                        foundIdx = null;
-                        focusLeft -= 2;
-                        continue;
-                    }
-                }
-            }
-
-            difference = 1;
-            while (difference <= focusLeft) {
-                foundIdx = newDiceRolls.findIndex(roll => difficulty - roll === difference);
-                if (foundIdx !== -1) {
-                    newDiceRolls[foundIdx] += difference;
-                    foundIdx = null;
-                    focusLeft -= difference;
-                    continue;
-                }
-                difference++;
-            }
-
-            if (difference > focusLeft) {
+            if (focusLeft < differenceToPass) {
                 break;
             }
+
+            foundIdx = newDiceRolls.findIndex(roll => roll === rollsToFind);
+
+            if (
+                (foundIdx === -1) ||
+                (!hasAncientKnowledge && (differenceToPass <= 0)) ||
+                (hasAncientKnowledge && (differenceToPass <= 0) && (focusLeft < differenceTo6))
+            ) {
+                rollsToFind--;
+                continue;
+            }
+
+            if (
+                hasAncientKnowledge &&
+                (focusLeft >= differenceTo6) &&
+                (differenceTo6 <= 2)
+            ) {
+                newDiceRolls[foundIdx] = 6;
+                focusLeft -= differenceTo6;
+                continue;
+            }
+
+            if (
+                (differenceToPass === 1) &&
+                (focusLeft >= differenceToPass)
+            ) {
+                newDiceRolls[foundIdx] += differenceToPass;
+                focusLeft -= differenceToPass;
+                rollsToFind += differenceToPass;
+                continue;
+            }
+
+            if (
+                hasAncientKnowledge &&
+                (focusLeft >= differenceTo6) &&
+                (differenceTo6 <= 4)
+            ) {
+                newDiceRolls[foundIdx] = 6;
+                focusLeft -= differenceTo6;
+                continue;
+            }
+
+            if (
+                (differenceToPass <= 2) &&
+                (focusLeft >= differenceToPass)
+            ) {
+                newDiceRolls[foundIdx] += differenceToPass;
+                focusLeft -= differenceToPass;
+                rollsToFind += differenceToPass;
+                continue;
+            }
+
+            if (
+                hasAncientKnowledge &&
+                (focusLeft >= differenceTo6)
+            ) {
+                newDiceRolls[foundIdx] = 6;
+                focusLeft -= differenceTo6;
+                continue;
+            }
+
+            if (
+                focusLeft >= differenceToPass
+            ) {
+                newDiceRolls[foundIdx] += differenceToPass;
+                focusLeft -= differenceToPass;
+                rollsToFind += differenceToPass;
+                continue;
+            }
+
+            rollsToFind--;
         }
 
-        difference = 1;
-        while (focusLeft > 0) {
-            while (difference < 6) {
-                foundIdx = newDiceRolls.findIndex(roll => 6 - roll === difference);
-                if (foundIdx !== -1) {
-                    newDiceRolls[foundIdx]++;
-                    difference = 1;
-                    foundIdx = null;
-                    focusLeft--;
-                    continue;
-                }
-                difference++;
-                break;
+        let difference = 1;
+        while (focusLeft > 0 && difference < 6) {
+            foundIdx = newDiceRolls.findIndex(roll => 6 - roll === difference);
+            if (foundIdx !== -1) {
+                newDiceRolls[foundIdx]++;
+                difference = 1;
+                focusLeft--;
+                continue;
             }
+            difference++;
 
             if (newDiceRolls.every(roll => roll === 6)) {
                 break;
