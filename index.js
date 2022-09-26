@@ -51,6 +51,8 @@ client.on("interactionCreate", async (interaction) => {
         );
         const newDiceRolls = _.cloneDeep(originalDiceRolls);
 
+        const indexesChanged = {};
+
         let
             differenceTo6,
             differenceToPass,
@@ -83,6 +85,7 @@ client.on("interactionCreate", async (interaction) => {
                 (differenceTo6 <= 2)
             ) {
                 newDiceRolls[foundIdx] = 6;
+                indexesChanged[foundIdx] = true;
                 focusLeft -= differenceTo6;
                 continue;
             }
@@ -92,6 +95,7 @@ client.on("interactionCreate", async (interaction) => {
                 (focusLeft >= differenceToPass)
             ) {
                 newDiceRolls[foundIdx] += differenceToPass;
+                indexesChanged[foundIdx] = true;
                 focusLeft -= differenceToPass;
                 rollsToFind += differenceToPass;
                 continue;
@@ -103,6 +107,7 @@ client.on("interactionCreate", async (interaction) => {
                 (differenceTo6 <= 4)
             ) {
                 newDiceRolls[foundIdx] = 6;
+                indexesChanged[foundIdx] = true;
                 focusLeft -= differenceTo6;
                 continue;
             }
@@ -112,6 +117,7 @@ client.on("interactionCreate", async (interaction) => {
                 (focusLeft >= differenceToPass)
             ) {
                 newDiceRolls[foundIdx] += differenceToPass;
+                indexesChanged[foundIdx] = true;
                 focusLeft -= differenceToPass;
                 rollsToFind += differenceToPass;
                 continue;
@@ -122,6 +128,7 @@ client.on("interactionCreate", async (interaction) => {
                 (focusLeft >= differenceTo6)
             ) {
                 newDiceRolls[foundIdx] = 6;
+                indexesChanged[foundIdx] = true;
                 focusLeft -= differenceTo6;
                 continue;
             }
@@ -130,6 +137,7 @@ client.on("interactionCreate", async (interaction) => {
                 focusLeft >= differenceToPass
             ) {
                 newDiceRolls[foundIdx] += differenceToPass;
+                indexesChanged[foundIdx] = true;
                 focusLeft -= differenceToPass;
                 rollsToFind += differenceToPass;
                 continue;
@@ -143,6 +151,7 @@ client.on("interactionCreate", async (interaction) => {
             foundIdx = newDiceRolls.findIndex(roll => 6 - roll === difference);
             if (foundIdx !== -1) {
                 newDiceRolls[foundIdx]++;
+                indexesChanged[foundIdx] = true;
                 difference = 1;
                 focusLeft--;
                 continue;
@@ -154,20 +163,45 @@ client.on("interactionCreate", async (interaction) => {
             }
         }
 
+        const indexSixes = newDiceRolls.reduce((accumulator, roll, idx) => {
+            if (roll === 6) {
+                accumulator[idx] = true;
+            }
 
-        let successes = newDiceRolls.filter((roll) => roll >= difficulty).length;
-        const sixes = newDiceRolls.filter((roll) => roll === 6).length;
+            return accumulator;
+        }, {});
+        const indexesSuccess = newDiceRolls.reduce((accumulator, roll, idx) => {
+            if (roll >= difficulty) {
+                accumulator[idx] = true;
+            }
+
+            return accumulator;
+        }, {});
+        const indexFailures = newDiceRolls.reduce((accumulator, roll, idx) => {
+            if (roll < difficulty) {
+                accumulator[idx] = true;
+            }
+
+            return accumulator;
+        }, {});
+
+        let successes = Object.keys(indexesSuccess).length;
+        const sixes = Object.keys(indexSixes).length;
 
         if (hasAncientKnowledge) {
             successes += sixes;
+            Object.keys(indexSixes).forEach(idx => newDiceRolls[idx] = `__${newDiceRolls[idx]}__`)
         }
 
+        Object.keys(indexesChanged).forEach(idx => newDiceRolls[idx] = `**${newDiceRolls[idx]}**`);
+        Object.keys(indexFailures).forEach(idx => newDiceRolls[idx] = `~~${newDiceRolls[idx]}~~`)
+
         let message = `
-DN: ${difficulty}:${complexity}, rolling: ${numberOfDice}d6, focus: ${focus}, Ancient Knowledge: ${hasAncientKnowledge}.
-rolls: ${originalDiceRolls.join(",")}.
-after focus: ${newDiceRolls.join(",")}.
+DN: ${difficulty}:${complexity}, rolling: ${numberOfDice}d6, focus: ${focus}, Ancient Knowledge: ${hasAncientKnowledge}
+${originalDiceRolls.join(", ")} - rolls
+${newDiceRolls.join(", ")} - after focus
 6's: ${sixes}
-made: ${successes}, need: ${complexity}.
+made: ${successes}, need: ${complexity}
 `;
         if (successes < complexity) {
             message += 'FAIL!';
