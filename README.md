@@ -1,2 +1,2 @@
 # DiceGoddess
-Discord boB
+Discord bot
