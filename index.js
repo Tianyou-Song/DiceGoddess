@@ -27,13 +27,6 @@ client.once("ready", () => {
     console.log("Ready!");
 });
 
-const rollDice = () => (
-    Math.trunc(
-        crypto.webcrypto.getRandomValues(new Uint32Array(1))[0] *
-        (3 / 2147483648)
-    ) + 1
-);
-
 client.on("interactionCreate", async (interaction) => {
     if (!interaction.isChatInputCommand()) {
         return;
@@ -49,16 +42,18 @@ client.on("interactionCreate", async (interaction) => {
         const focus = options.getNumber("focus") || 0;
         const hasAncientKnowledge = options.getBoolean("ancient_knowledge") || false;
 
-        const originalDiceRolls = Array.from(
-            {
-                length: numberOfDice,
-            },
-            () => rollDice()
-        );
-        const newDiceRolls = _.cloneDeep(originalDiceRolls);
+        const randomArray = new Uint32Array(numberOfDice);
+        crypto.webcrypto.getRandomValues(randomArray);
+        const originalDiceRolls = randomArray.map(randomNumber => (
+            Math.trunc(
+                randomNumber *
+                (3 / 2147483648)
+            ) + 1
+        ));
+
+        const newDiceRolls = Array.from(originalDiceRolls);
 
         const indexesChanged = {};
-
         let
             differenceTo6,
             differenceToPass,
