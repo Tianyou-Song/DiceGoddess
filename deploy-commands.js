@@ -40,7 +40,7 @@ const commands = [
             .setRequired(true)
         )
         .addNumberOption(option => option
-            .setDescription("Applied to maximize successes, edge cases not covered (wanting more 6's than overall successes)")
+            .setDescription("Applied to maximize successes, edge cases not covered e.g. wanting more 6's than overall successes")
             .setMinValue(0)
             .setName('focus')
         )
