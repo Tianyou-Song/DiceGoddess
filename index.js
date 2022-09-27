@@ -6,6 +6,7 @@ import _ from 'lodash';
 // Require the necessary discord.js classes
 import { Client, GatewayIntentBits } from "discord.js";
 import { config } from "dotenv";
+import crypto from 'crypto';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -26,7 +27,11 @@ client.once("ready", () => {
     console.log("Ready!");
 });
 
-const rollDice = () => Math.floor(Math.random() * 6) + 1;
+let randomNum;
+const rollDice = () => {
+    randomNum = crypto.webcrypto.getRandomValues(new Uint32Array(1))[0]/2**32;
+    return Math.floor(randomNum * 6) + 1;
+}
 
 client.on("interactionCreate", async (interaction) => {
     if (!interaction.isChatInputCommand()) {
