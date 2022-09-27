@@ -27,11 +27,7 @@ client.once("ready", () => {
     console.log("Ready!");
 });
 
-let randomNum;
-const rollDice = () => {
-    randomNum = crypto.webcrypto.getRandomValues(new Uint32Array(1))[0]/2**32;
-    return Math.floor(randomNum * 6) + 1;
-}
+const rollDice = () => Math.floor((3/2147483648) * crypto.webcrypto.getRandomValues(new Uint32Array(1))[0]) + 1;
 
 client.on("interactionCreate", async (interaction) => {
     if (!interaction.isChatInputCommand()) {
