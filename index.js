@@ -42,8 +42,10 @@ client.on("interactionCreate", async (interaction) => {
         const focus = options.getNumber("focus") || 0;
         const hasAncientKnowledge = options.getBoolean("ancient_knowledge") || false;
 
-        const randomArray = new Uint32Array(numberOfDice);
-        crypto.webcrypto.getRandomValues(randomArray);
+        const randomArray = crypto.webcrypto.getRandomValues(
+            new Uint32Array(numberOfDice)
+        );
+
         const originalDiceRolls = randomArray.map(randomNumber => (
             Math.trunc(
                 randomNumber *
