@@ -49,7 +49,7 @@ client.on("interactionCreate", async (interaction) => {
             () => crypto.randomInt(1, 7)
         );
 
-        const newDiceRolls = Array.from(originalDiceRolls);
+        const newDiceRolls = _.cloneDeep(originalDiceRolls);
 
         const indexesChanged = {};
         let
@@ -162,7 +162,7 @@ client.on("interactionCreate", async (interaction) => {
             }
         }
 
-        const indexSixes = newDiceRolls.reduce((accumulator, roll, idx) => {
+        const indexSix = newDiceRolls.reduce((accumulator, roll, idx) => {
             if (roll === 6) {
                 accumulator[idx] = true;
             }
@@ -176,7 +176,7 @@ client.on("interactionCreate", async (interaction) => {
 
             return accumulator;
         }, {});
-        const indexFailures = newDiceRolls.reduce((accumulator, roll, idx) => {
+        const indexFailure = newDiceRolls.reduce((accumulator, roll, idx) => {
             if (roll < difficulty) {
                 accumulator[idx] = true;
             }
@@ -185,15 +185,15 @@ client.on("interactionCreate", async (interaction) => {
         }, {});
 
         let successes = Object.keys(indexesSuccess).length;
-        const sixes = Object.keys(indexSixes).length;
+        const sixes = Object.keys(indexSix).length;
 
         if (hasAncientKnowledge) {
             successes += sixes;
-            Object.keys(indexSixes).forEach(idx => newDiceRolls[idx] = `__${newDiceRolls[idx]}__`)
+            Object.keys(indexSix).forEach(idx => newDiceRolls[idx] = `__${newDiceRolls[idx]}__`)
         }
 
         Object.keys(indexesChanged).forEach(idx => newDiceRolls[idx] = `**${newDiceRolls[idx]}**`);
-        Object.keys(indexFailures).forEach(idx => newDiceRolls[idx] = `~~${newDiceRolls[idx]}~~`)
+        Object.keys(indexFailure).forEach(idx => newDiceRolls[idx] = `~~${newDiceRolls[idx]}~~`)
 
         let message = `
 DN: ${difficulty}:${complexity}, rolling: ${numberOfDice}d6, focus: ${focus}, Ancient Knowledge: ${hasAncientKnowledge}
