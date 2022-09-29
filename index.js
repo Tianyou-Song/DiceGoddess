@@ -208,7 +208,7 @@ made: ${successes}, need: ${complexity}
             message += `SUCCESS! additional success: ${successes - complexity}`;
         }
 
-        await interaction.reply(message);
+        interaction.reply(message);
 
         break;
 
