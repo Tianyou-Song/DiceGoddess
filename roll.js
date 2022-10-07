@@ -174,10 +174,10 @@ export const rollAll = params => {
     const {
         attempts,
         complexity,
-        diceCount,
-        difficulty,
-        focus,
-        has6as2,
+        // diceCount,
+        // difficulty,
+        // focus,
+        // has6as2,
     } = params;
 
     const results = {
