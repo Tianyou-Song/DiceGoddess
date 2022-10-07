@@ -28,10 +28,10 @@ const commands = [
             .setRequired(true)
         )
         .addNumberOption(option => option
-            .setDescription('Leave blank or 0 to make :s rolls.')
+            .setDescription('Enter 0 to make :s rolls.')
             .setMinValue(0)
             .setName('complexity')
-            .setRequired(false)
+            .setRequired(true)
         )
         .addNumberOption(option => option
             .setDescription('Number of d6\'s.')
