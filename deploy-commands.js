@@ -1,9 +1,9 @@
-import { dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 // Require the necessary discord.js classes
-import { REST, SlashCommandBuilder, Routes } from "discord.js";
-import { config } from "dotenv";
+import { REST, SlashCommandBuilder, Routes } from 'discord.js';
+import { config } from 'dotenv';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -14,39 +14,46 @@ config({
 
 const { CLIENT_ID, GUILD_ID, DISCORD_TOKEN } = process.env;
 
-const rest = new REST({ version: "10" }).setToken(DISCORD_TOKEN);
+const rest = new REST({ version: '10' }).setToken(DISCORD_TOKEN);
 
 const commands = [
     new SlashCommandBuilder()
         .setName('r')
         .setDescription('Dice roller for Soulbound. Featuring intelligent focus and ancient knowledge application.')
         .addNumberOption(option => option
-            .setDescription('difficulty')
+            .setDescription('Difficulty.')
             .setMaxValue(6)
             .setMinValue(2)
-            .setName('difficulty')
+            .setName('Difficulty')
             .setRequired(true)
         )
         .addNumberOption(option => option
-            .setDescription('complexity')
-            .setMinValue(1)
-            .setName('complexity')
-            .setRequired(true)
-        )
-        .addNumberOption(option => option
-            .setDescription("number of d6's")
-            .setMinValue(1)
-            .setName('number_of_dice')
-            .setRequired(true)
-        )
-        .addNumberOption(option => option
-            .setDescription("Applied to maximize successes, edge cases not covered e.g. wanting more 6's than overall successes")
+            .setDescription('Leave blank or 0 to make :s rolls.')
             .setMinValue(0)
-            .setName('focus')
+            .setName('Complexity')
+            .setRequired(false)
+        )
+        .addNumberOption(option => option
+            .setDescription('Number of d6\'s.')
+            .setMinValue(1)
+            .setName('Number_of_Dice')
+            .setRequired(true)
+        )
+        .addNumberOption(option => option
+            .setDescription('Applied to maximize successes, edge cases not covered e.g. wanting more 6\'s than overall successes.')
+            .setMinValue(0)
+            .setName('Focus')
+            .setRequired(false)
+        )
+        .addNumberOption(option => option
+            .setDescription('For extended tests. Leave blank or 1 for normal roll.')
+            .setMinValue(1)
+            .setName('Attempts')
+            .setRequired(false)
         )
         .addBooleanOption(option => option
-            .setDescription("Any result of 6 counts as two successes")
-            .setName('ancient_knowledge')
+            .setDescription('Any result of 6 counts as 2 successes. e.g. Ancient Knowledge.')
+            .setName('6_Counts_as_2_Successes')
             .setRequired(false)
         )
 ]
@@ -58,11 +65,11 @@ rest.put(Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID), { body: commands 
 
 // rest
 //   .put(Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID), { body: [] })
-//   .then(() => console.log("Successfully deleted all guild commands."))
+//   .then(() => console.log('Successfully deleted all guild commands.'))
 //   .catch(console.error);
 
 // // for global commands
 // rest
 //   .put(Routes.applicationCommands(CLIENT_ID), { body: [] })
-//   .then(() => console.log("Successfully deleted all application commands."))
+//   .then(() => console.log('Successfully deleted all application commands.'))
 //   .catch(console.error);
