@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 import { Client, GatewayIntentBits } from "discord.js";
 import { config } from "dotenv";
 
-import { rollAll } from './roll';
+import { rollAll } from './roll.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
