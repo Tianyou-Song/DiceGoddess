@@ -37,12 +37,12 @@ client.on("interactionCreate", async (interaction) => {
     switch (commandName) {
         case "r":
             const params = {
-                attempts: options.getNumber("Attempts") || 1,
-                complexity: options.getNumber("Complexity"),
-                diceCount: options.getNumber("Number_of_Dice"),
-                difficulty: options.getNumber("Difficulty"),
-                focus: options.getNumber("Focus") || 0,
-                has6as2: options.getBoolean("6_Counts_as_2_Successes") || false,
+                attempts: options.getNumber("attempts") || 1,
+                complexity: options.getNumber("complexity") || 0,
+                diceCount: options.getNumber("number_of_dice"),
+                difficulty: options.getNumber("difficulty"),
+                focus: options.getNumber("focus") || 0,
+                has6as2: options.getBoolean("6_counts_as_2_successes") || false,
             };
 
             interaction.reply(rollAll(params));
