@@ -187,8 +187,9 @@ export const rollAll = params => {
     };
 
     let
-        originalRolls,
         newRolls,
+        originalRolls,
+        sixes,
         successes;
 
     for (let i = 0; i < attempts; i++) {
@@ -198,18 +199,20 @@ export const rollAll = params => {
         results.successes += successes;
     }
 
-    let outLines = [`DN: ${difficulty}:${complexity}, rolling: ${diceCount}d6, Focus: ${focus}, 6 Counts as 2 Successes: ${has6as2}`];
+    let outLines = [
+        // `DN: ${difficulty}:${complexity}, rolling: ${diceCount}d6, Focus: ${focus}, Attempts: ${attempts}, 6 Counts as 2 Successes: ${has6as2}`
+    ];
 
     outLines = outLines.concat(results.rolls.reduce((accumulator, rollResult, idx) => {
         ({ originalRolls, newRolls } = rollResult);
         return accumulator.concat(
-            `${originalRolls.join(', ')} Attempt ${idx + 1}`
+            `${originalRolls.join(', ')} - Attempt ${idx + 1}`
         ).concat(
-            `${newRolls.join(', ')} after Focus`
+            `${newRolls.join(', ')} - after Focus`
         );
     }, []));
 
-    outLines = outlines.concat([
+    outLines = outLines.concat([
         `6's: ${results.sixes}`,
         `Successes: ${results.successes}, Complexity: ${complexity}`,
     ]);
