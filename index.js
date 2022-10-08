@@ -36,12 +36,7 @@ const handleInteractions = async (interaction) => {
 
     switch (commandName) {
         case "r":
-            try {
-                await interaction.deferReply();
-            } catch (e) {
-                console.error('interaction:', interaction.id, 'error in defer:', e.message);
-                return;
-            }
+            await interaction.deferReply();
 
             const params = {
                 attempts: options.getNumber("attempts") || 1,
@@ -54,12 +49,7 @@ const handleInteractions = async (interaction) => {
 
             const resultString = rollAll(params);
 
-            try {
-                await interaction.editReply(resultString);
-                return;
-            } catch (e) {
-                console.error('interaction:', interaction.id, 'error in edit:', e.message);
-            }
+            await interaction.editReply(resultString);
 
             return;
         default:
@@ -71,8 +61,9 @@ const handleInteractions = async (interaction) => {
 client.on("interactionCreate", async (interaction) => {
     try {
         await handleInteractions(interaction);
-    } catch (e) {
-        console.error(e.message);
+    } catch (error) {
+        console.error('interaction:', interaction.id, 'error message:', error.message);
+        console.error(error);
     }
 });
 
