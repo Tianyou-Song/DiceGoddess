@@ -5,7 +5,6 @@ import { fileURLToPath } from "node:url";
 // Require the necessary discord.js classes
 import { Client, GatewayIntentBits } from "discord.js";
 import { config } from "dotenv";
-import { spawn, Thread, Worker } from "threads"
 
 import { rollAll } from './roll.js';
 
@@ -28,8 +27,7 @@ client.once("ready", () => {
     console.log("Ready!");
 });
 
-
-client.on("interactionCreate", async (interaction) => {
+const handleInteractions = async (interaction) => {
     if (!interaction.isChatInputCommand()) {
         return;
     }
@@ -54,9 +52,7 @@ client.on("interactionCreate", async (interaction) => {
                 has6as2: options.getBoolean("6_counts_as_2_successes") || false,
             };
 
-            const worker = await spawn(new Worker('./worker.js'));
-            const resultString = await worker.roll(params);
-            Thread.terminate(worker);
+            const resultString = rollAll(params);
 
             try {
                 await interaction.editReply(resultString);
@@ -68,6 +64,15 @@ client.on("interactionCreate", async (interaction) => {
             return;
         default:
             return;
+    }
+}
+
+
+client.on("interactionCreate", async (interaction) => {
+    try {
+        await handleInteractions(interaction);
+    } catch (e) {
+        console.error(e.message);
     }
 });
 
