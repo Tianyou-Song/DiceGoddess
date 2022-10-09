@@ -174,10 +174,10 @@ export const rollAll = params => {
     const {
         attempts,
         complexity,
-        // diceCount,
-        // difficulty,
-        // focus,
-        // has6as2,
+        diceCount,
+        difficulty,
+        focus,
+        has6as2,
     } = params;
 
     const results = {
@@ -200,7 +200,7 @@ export const rollAll = params => {
     }
 
     let outLines = [
-        // `DN: ${difficulty}:${complexity}, rolling: ${diceCount}d6, Focus: ${focus}, Attempts: ${attempts}, 6 Counts as 2 Successes: ${has6as2}`
+        `DN: ${difficulty}:${complexity}, rolling: ${diceCount}d6, Focus: ${focus}, Attempts: ${attempts}, 6 Counts as 2 Successes: ${has6as2}`
     ];
 
     outLines = outLines.concat(results.rolls.reduce((accumulator, rollResult, idx) => {
