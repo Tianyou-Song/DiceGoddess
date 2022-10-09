@@ -60,10 +60,21 @@ const handleInteractions = async (interaction) => {
 
 client.on("interactionCreate", async (interaction) => {
     try {
+        console.log(
+            'interaction:', interaction.id,
+            'user:', interaction.user.username,
+        );
         await handleInteractions(interaction);
     } catch (error) {
-        console.error('interaction:', interaction.id, 'error message:', error.message);
-        console.error(error);
+        console.error(
+            'Error. interaction:', interaction.id,
+            'code:', error.code,
+            'message:', error.message,
+            'status:', error.status,
+            'user id:', interaction.user.id,
+            'user:', interaction.user.username,
+            'options:', interaction.options,
+        );
     }
 });
 
